@@ -4,6 +4,6 @@
 
 ## Para rodar o projeto rode os seguintes comandos
 
-pip install python-dotenv
-pip install requests
-pip install pytelegrambotapi
+* pip install python-dotenv
+* pip install requests
+* pip install pytelegrambotapi
