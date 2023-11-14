@@ -13,7 +13,7 @@ APP_ID = os.getenv('APP_ID')
 @bot.message_handler(commands=['help', 'start'])
 def send_welcome(mensagem):
     bot.reply_to(mensagem, """\
-                Olá, \n eu sou o bot do Jacão, irei te ajudar a fazer uma receita com os ingredientes que você tem disponivel.
+                Olá, \n eu sou o bot do Jacão, irei te ajudar a fazer uma receita com os ingredientes que você tem disponivel. Porfavor, Digite Seus Ingredientes separados por espaço
                     """)   
 
 # Função para obter uma receita com base nos ingredientes usando a API Edamam
@@ -22,24 +22,19 @@ def get_recipe(ingredients):
     query = '&'.join(ingredients)
 
     # URL da API Edamam para buscar receitas por ingredientes
-    url = f'https://api.edamam.com/search?q={query}&app_id={APP_ID}&app_key={EDAMAM_API_KEY}'
+    url = f'https://api.edamam.com/search?q={query}&app_id={APP_ID}&app_key={EDAMAM_API_KEY}&to=1'
     print(f'URL da requisição: {url}')
     # Enviando uma solicitação HTTP para a API Edamam
     response = requests.get(url)
     data = response.json()
-    print(data)
-    # Verificando se foram encontradas receitas com todos os ingredientes
+    
+     # Verificando se foram encontradas receitas
     if 'hits' in data and data['hits']:
         recipes = data['hits']
-
-        # Verificando se cada ingrediente está presente na receita
-        for recipe_data in recipes:
-            recipe = recipe_data['recipe']
-            recipe_ingredients = recipe.get('ingredientLines', [])
-
-            # Verificando se todos os ingredientes estão na receita
-            if all(ingredient.lower() in ' '.join(recipe_ingredients).lower() for ingredient in ingredients):
-                return recipe['label'], recipe['url']
+        first_recipe = recipes[0]['recipe']
+        return first_recipe['label'], first_recipe['url']
+    else:
+        return None
 
     return None
 
